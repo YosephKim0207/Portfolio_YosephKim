@@ -1,0 +1,40 @@
+{
+  "gunDatas": [
+    {
+      "name": "001",
+      "gunType": "pistol",
+      "bulletType": "001",
+      "shootCoolTime": "0.7",
+      "damage": "5",
+      "ammo": "10",
+      "reloadTime": "2.0"
+    },
+    {
+      "name": "021",
+      "gunType": "pistol",
+      "bulletType":"001",
+      "shootCoolTime": "0.5",
+      "damage": "10",
+      "ammo": "6",
+      "reloadTime": "0.4"
+    },
+    {
+      "name": "101",
+      "gunType": "assaultRifle",
+      "bulletType": "003",
+      "shootCoolTime": "0.2",
+      "damage": "2",
+      "ammo": "36",
+      "reloadTime": "1.0"
+    },
+    {
+      "name": "111",
+      "gunType": "assaultRifle",
+      "bulletType": "002",
+      "shootCoolTime": "0.1",
+      "damage": "5",
+      "ammo": "36",
+      "reloadTime": "0.7"
+    }
+  ] 
+}
