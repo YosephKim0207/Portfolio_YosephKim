@@ -9,6 +9,7 @@ public class BulletController : MonoBehaviour {
     public Vector3 DestPos { get; set; }
     public Rigidbody2D _rigidbody;
     float _speed = 0.0f;
+    float _outRange = 0.05f;
 
     private void Awake() {
         _rigidbody = GetComponent<Rigidbody2D>();
@@ -25,7 +26,7 @@ public class BulletController : MonoBehaviour {
     protected virtual void Update() {
         // 카메라 영역+a 벗어나는 경우 총알 제거
         _bullPos = _cam.WorldToViewportPoint(transform.position);
-        if (_bullPos.x <= -0.05f || _bullPos.x >= 1.05f || _bullPos.y <= -0.05f || _bullPos.y >= 1.05f) {
+        if (_bullPos.x <= -_outRange || _bullPos.x >= 1.0f + _outRange || _bullPos.y <= -_outRange || _bullPos.y >= 1.0f + _outRange) {
             creature = null;
             Manager.Pool.PushPoolChild(this.gameObject);
         }
