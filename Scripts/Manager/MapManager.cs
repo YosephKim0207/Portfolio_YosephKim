@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class MapManager {
-    Tilemap _tilemap;
     GameObject _map;
     Coroutine _coSleep;
     public bool[,] _collsionData;
@@ -79,17 +78,12 @@ public class MapManager {
         return !_collsionData[cellPos.Y, cellPos.X];
     }
 
-    // TODO
     // 다중 캐릭터가 장거리에서 동시에 길찾기 실행시 cpu에 과부하 발생 및 프레임 저하
-    // 길찾기 혹은 거리에 따라 캐주얼한 방식으로 길을 찾을 수 있도록 하기
-    // 근처에 타겟이 같은 enemy들이 있다면 경로를 공유하는 방법은 어떨까?(옆 경로 할당)
     // 장거리일 경우 일단 직선 경로로 가도록 하기, 가다가 collsion 만나면 그때부터 A* 실행하도록
     #region A*
     // 우선순위큐
     // F : 최종점수 (G + H) - H는 현재부터 목적지까지의 추정 비용
     // G : 현재까지의 비용
-    // Y :
-    // X : 
     public struct PQNode : IComparable<PQNode> {
         public int F, G, Y, X;
 
@@ -113,14 +107,6 @@ public class MapManager {
         public static bool operator !=(Pos pos1, Pos pos2) {
             return !(pos1 == pos2);
         }
-
-        //public static bool operator > (Pos po1, Pos pos2) {
-        //    ru
-        //}
-
-        //public static bool operator < (Pos po1, Pos pos2) {
-
-        //}
     }
 
     //List<PQNode> 
@@ -185,10 +171,6 @@ public class MapManager {
 
                 break;
             }
-            //if (curNode.F > 160) {
-            //    Debug.LogError($"warning, F is : {curNode.F}, XY : ({curNode.X}, {curNode.Y}) / TargetNode : ({destArrPos.X}, {destArrPos.Y})");
-            //    //_coSleep = StartCoroutine
-            //}
 
             // 다른 노드에서 탐색 중에 이미 방문한 경우 skip
             if (_closedCheck[curNode.Y, curNode.X] == false) {
@@ -204,22 +186,11 @@ public class MapManager {
             // TODO 8방위 F 구하여 우선순위큐에 넣기
             for (int i = 0; i < _deltaY.Length; ++i) {
                 // 체크할 위치 설정
-                //Vector3Int nextPos = new Vector3Int(curNode.X + _deltaX[i], curNode.Y + _deltaY[i], 0);
                 Pos nextArrPos = new Pos(curNode.Y + _deltaY[i], curNode.X + _deltaX[i]);
                 //Debug.Log($"Check {nextArrPos.X} , {nextArrPos.Y}");
 
-                // nextPos가 destCellPos인지 체크 - obj충돌 문제로 curCellPos는 destCellPos가 될 수 없기 때문 
-                // 하지만 바로 최단거리라고 추정하기에는 어폐가 있음
-                // 현 경로가 대각선 이동으로 종착하지만 다른 경로 중 직선 이동으로 도착하는 최단거리가 있을 수 있음
-                //if(nextArrPos.Y == destArrPos.Y && nextArrPos.X == destArrPos.X) {
-                //    Debug.Log("NextPos == destArrPos check");
-                //    _parent[nextArrPos.Y, nextArrPos.X] = new Pos(curNode.Y, curNode.X);
-
-                //    break;
-                //}
 
                 // nextPos가 이동 불가능한 cell의 좌표인 경우 다음 방위를 체크
-                //Vector3Int nextCellPos = ArrToCellPos(nextArrPos);
                 //Debug.Log($"nextCellPos : {nextCellPos}");
                 bool colCheck = Manager.Map.CheckCollision(nextArrPos);
                 if (!colCheck) {
@@ -272,12 +243,7 @@ public class MapManager {
                 _parent[nextArrPos.Y, nextArrPos.X] = new Pos(curNode.Y, curNode.X);
             }
         }
-        //if (curNode.F > 60) {
-        //    return CurFromDestPath(_parent, new Pos(curNode.Y, curNode.X));
-        //}
-        //else{
             return CurFromDestPath(_parent, destArrPos, curArrPos);
-        //}
     }
         
     // destPos까지 이동 예상 비용
@@ -297,12 +263,6 @@ public class MapManager {
         
         Pos replacePos = destPos;
 
-        //if (destPos.X <= 0 || destPos.X > xCount) {
-        //    return false;
-        //}
-        //if (destPos.Y <= 0 || destPos.Y > yCount) {
-        //    return false;
-        //}
 
         for (int i = 0; i < _deltaY.Length; ++i) {
             replacePos = new Pos(destPos.Y + _deltaY[i], destPos.X + _deltaX[i]);
@@ -321,8 +281,6 @@ public class MapManager {
         Pos prePos = parent[curPos.Y, curPos.X];
 
         // DestCellPos로부터 parentCellPos를 역추적하며 pathStack에 저장
-        // curPos와 startPos
-        //while (!((prePos.X == startPos.X) && (prePos.Y == startPos.Y))) {
         while (prePos != startPos) { 
             // ArrayPos를 WorldPos로 변환
             Vector3Int preCellPos = new Vector3Int(prePos.X + MinX, prePos.Y + MinY, 0);
@@ -363,14 +321,5 @@ public class MapManager {
             return cal;
         }
     }
-
-    //IEnumerator CoSleep() {
-    //    yield return new WaitForSeconds(1.0f);
-
-    //    _coSleep = null;
-    //}
     #endregion
-
-    // TODO Ray를 통해 FindPath를 통한 이동 중 enemy / target 아닌 player를 발견할 경우 (collision or trigger) 탐지하는 함수
-
 }

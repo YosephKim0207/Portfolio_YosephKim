@@ -9,6 +9,7 @@ public class EnemyController : CreatureController {
     Coroutine _coFindPath;
     float _coDoTime = 1.0f;
     float _coFIndPathTime = 0.25f;
+    WaitForSeconds WaitFindPathTime;
     GameObject _player;
     GameObject _dropItem;
     Grid _grid;
@@ -36,6 +37,7 @@ public class EnemyController : CreatureController {
         _grid = Manager.Map.Grid;
         xCount = Manager.Map.xCount;
         yCount = Manager.Map.yCount;
+        WaitFindPathTime = new WaitForSeconds(_coFIndPathTime);
     }
 
 
@@ -197,9 +199,6 @@ public class EnemyController : CreatureController {
             PathState = FindPathState.UsePathStack;
          }
         
-
-        // TODO
-        // refindpath와 pathstackisnull 합치기
         switch (PathState) {
             case FindPathState.UseDirect:
                 _destPos = (_target.position - transform.position).normalized;
@@ -214,7 +213,7 @@ public class EnemyController : CreatureController {
                 break;
         }
 
-        yield return new WaitForSeconds(_coFIndPathTime);
+        yield return WaitFindPathTime;
 
         _coFindPath = null;
     }
